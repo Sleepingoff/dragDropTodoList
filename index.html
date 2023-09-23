@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDo</title>
+    <style>
+      main {
+        display: flex;
+      }
+      article {
+        flex-shrink: 0;
+      }
+      div.wrap {
+        flex-shrink: 1;
+        flex-grow: 1;
+        display: flex;
+        align-items: start;
+        box-shadow: 5px 5px 10px #ccc;
+        padding: 0 10px;
+      }
+      div.wrap hr {
+        margin: 10px;
+        align-self: stretch;
+      }
+      div.wrap section {
+        margin: auto;
+        width: 100%;
+      }
+      div.wrap section h2 {
+        text-align: center;
+      }
+      div.wrap section ul {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 10px;
+        box-shadow: inset 0px 0px 5px #ccc;
+      }
+      #archive {
+        color: #333;
+      }
+      li {
+        display: flex;
+      }
+      .archive {
+        color: #333;
+      }
+      .archive::before {
+        content: "archive";
+        background-color: yellow;
+        color: orange;
+      }
+      #progress {
+        font-weight: bold;
+      }
+      .progress {
+        font-weight: bold;
+      }
+      .progress::before {
+        content: "progress";
+        background-color: green;
+        color: greenyellow;
+      }
+      #done {
+        color: #ccc;
+      }
+      .done {
+        color: #ccc;
+      }
+      .done::before {
+        content: "done";
+        background-color: #333;
+        color: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+    <header><h1>ToDoList</h1></header>
+    <main>
+      <article>
+        <form action="submit" id="todo">
+          <input type="text" />
+          <button id="add">ADD</button>
+        </form>
+        <ul id="all"></ul>
+      </article>
+      <div class="wrap">
+        <section>
+          <h2>Archive</h2>
+          <ul id="archive"></ul>
+        </section>
+        <hr />
+        <section>
+          <h2>Progress</h2>
+          <ul id="progress"></ul>
+        </section>
+        <hr />
+        <section>
+          <h2>Done</h2>
+          <ul id="done"></ul>
+        </section>
+      </div>
+    </main>
+    <button id="delete">delete</button>
+    <script>
+      const containers = document.querySelectorAll("section ul");
+      const archive = document.querySelector("#archive");
+      const progress = document.querySelector("#progress");
+      const done = document.querySelector("#done");
+      const todoForm = document.querySelector("#todo");
+      const todoInput = todoForm.querySelector("input");
+      const addBtn = todoForm.querySelector("#add");
+      const deleteBtn = document.querySelector("#delete");
+
+      /**
+       * todo status: archive, progress, done
+       * default: none;
+       * **/
+      class ToDo {
+        constructor(newTodo) {
+          this.id = Math.random(new Date());
+          this.todo = newTodo;
+          this.status = "";
+          this.className = this.status;
+        }
+        changeStatus(status) {
+          this.status = status;
+        }
+      }
+      /**
+       * todos = [ {id: id, todo: todo, status: status }, ... ]
+       * create, read, update, delete, archive
+       * **/
+      class ToDoManager {
+        constructor() {
+          this.todos = [];
+        }
+        createTodo(newTodo) {
+          const Todo = new ToDo(newTodo);
+          this.todos = [...this.todos, Todo];
+          this.readTodo();
+          return Todo;
+        }
+        readTodo() {
+          //NodeList로 받아와서 상태 변경이 되면 새로 업데이트 해줘야함
+          const todoList = document.querySelector("#all");
+          const frag = document.createDocumentFragment();
+          //데이터에 맞게 리스트 새로 생성하기
+          this.todos.forEach((todo) => {
+            const li = document.createElement("li");
+            li.setAttribute("draggable", true);
+
+            li.innerHTML = `${todo.todo}`;
+            li.dataset.key = `${todo.id}`;
+            li.dataset.status = `${todo?.status}`;
+            li.className = `${todo?.status}`;
+            frag.append(li);
+          });
+          //기존 리스트 지우기
+          while (todoList.firstChild) {
+            todoList.firstChild.remove();
+          }
+          //새로 생성한 리스트 추가하기
+          todoList.append(frag);
+          return todoList;
+        }
+        updateTodo(todo) {
+          const target = this.todos.find((elem) => todo.dataset.key == elem.id);
+          target.todo = todo.innerText;
+          target.changeStatus(todo.dataset.status);
+          this.readTodo();
+          return this.todos;
+        }
+        deleteTodo(todo) {
+          this.todos = this.todos.filter((elem) => elem.id != todo.dataset.key);
+          this.readTodo();
+          return this.todos;
+        }
+      }
+
+      const statusList = ["archive", "progress", "done"];
+      const TodoList = new ToDoManager();
+
+      todoForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!todoInput.value) {
+          alert("할 일을 입력해주세요");
+          return false;
+        }
+        //새로운 할 일을 생성
+        const newTodo = TodoList.createTodo(todoInput.value);
+        todoInput.value = "";
+
+        //할 일 목록을 읽어오기
+        const todoList = TodoList.readTodo();
+
+        let selectedItem;
+        //드래그앤드랍으로 할 일 상태 지정하기
+        todoList.childNodes.forEach((list) => {
+          //상태 리스트로 옮겨갈 대상 복사하기
+          //드래그 기본 이벤트 막기
+          list.addEventListener("dragstart", (event) => {
+            selectedItem = event.target.cloneNode(true);
+            console.log(selectedItem);
+          });
+          list.addEventListener("drag", (event) => {
+            event.preventDefault();
+          });
+          //상태 리스트로 드래그할 때만 적용하기
+          containers.forEach((container) => {
+            container.addEventListener("dragover", (event) => {
+              //새로운 컨테이너에 추가
+              container.appendChild(selectedItem);
+              //상태 업데이트
+              selectedItem.dataset.status = `${container.id}`;
+              selectedItem.className = `${container.id}`;
+              list.className = selectedItem.dataset.status;
+              TodoList.updateTodo(selectedItem);
+            });
+            deleteBtn.addEventListener("dragover", (e) => e.preventDefault());
+            deleteBtn.addEventListener("drop", (event) => {
+              //할 일 목록에서 삭제
+              TodoList.deleteTodo(list);
+              //상태 목록에서 삭제
+              container.childNodes.forEach((todo) => {
+                if (todo.dataset.key === list.dataset.key) todo.remove();
+              });
+            });
+          });
+        });
+      });
+      //! 1차 결과: 한 개만 가능 여러개 추가하고 드래그앤드랍시 updateTodo에서 오류가 난다
+      //cloneNode.. -> json,, 분류하는게 더 빠르겠다,,
+    </script>
+  </body>
+</html>
