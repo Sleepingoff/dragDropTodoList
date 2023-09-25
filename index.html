@@ -122,9 +122,8 @@
           this.id = Math.random(new Date());
           this.todo = newTodo;
           this.status = "";
-          this.className = this.status;
         }
-        changeStatus(status) {
+        setStatus(status) {
           this.status = status;
         }
       }
@@ -139,43 +138,41 @@
         createTodo(newTodo) {
           const Todo = new ToDo(newTodo);
           this.todos = [...this.todos, Todo];
-          this.readTodo();
           return Todo;
         }
-        readTodo() {
+        paintTodo() {
           //NodeList로 받아와서 상태 변경이 되면 새로 업데이트 해줘야함
           const todoList = document.querySelector("#all");
+          //기존 리스트 지우기
+          while (todoList.firstChild) {
+            todoList.firstChild.remove();
+          }
+
           const frag = document.createDocumentFragment();
           //데이터에 맞게 리스트 새로 생성하기
           this.todos.forEach((todo) => {
             const li = document.createElement("li");
             li.setAttribute("draggable", true);
-
             li.innerHTML = `${todo.todo}`;
-            li.dataset.key = `${todo.id}`;
+            li.key = `${todo.id}`;
             li.dataset.status = `${todo?.status}`;
             li.className = `${todo?.status}`;
             frag.append(li);
           });
-          //기존 리스트 지우기
-          while (todoList.firstChild) {
-            todoList.firstChild.remove();
-          }
+
           //새로 생성한 리스트 추가하기
           todoList.append(frag);
           return todoList;
         }
-        updateTodo(todo) {
-          const target = this.todos.find((elem) => todo.dataset.key == elem.id);
+        updateTodo(todo, status) {
+          const target = this.todos.find((elem) =>
+            todo.key == elem.id ? todo : elem
+          );
           target.todo = todo.innerText;
-          target.changeStatus(todo.dataset.status);
-          this.readTodo();
-          return this.todos;
+          target.setStatus(status ?? todo.dataset.status);
         }
         deleteTodo(todo) {
-          this.todos = this.todos.filter((elem) => elem.id != todo.dataset.key);
-          this.readTodo();
-          return this.todos;
+          this.todos = this.todos.filter((elem) => elem.id != todo.key);
         }
       }
 
@@ -193,45 +190,44 @@
         todoInput.value = "";
 
         //할 일 목록을 읽어오기
-        const todoList = TodoList.readTodo();
-
-        let selectedItem;
-        //드래그앤드랍으로 할 일 상태 지정하기
-        todoList.childNodes.forEach((list) => {
-          //상태 리스트로 옮겨갈 대상 복사하기
-          //드래그 기본 이벤트 막기
-          list.addEventListener("dragstart", (event) => {
-            selectedItem = event.target.cloneNode(true);
-            console.log(selectedItem);
-          });
-          list.addEventListener("drag", (event) => {
-            event.preventDefault();
-          });
-          //상태 리스트로 드래그할 때만 적용하기
-          containers.forEach((container) => {
-            container.addEventListener("dragover", (event) => {
-              //새로운 컨테이너에 추가
-              container.appendChild(selectedItem);
-              //상태 업데이트
-              selectedItem.dataset.status = `${container.id}`;
-              selectedItem.className = `${container.id}`;
-              list.className = selectedItem.dataset.status;
-              TodoList.updateTodo(selectedItem);
-            });
-            deleteBtn.addEventListener("dragover", (e) => e.preventDefault());
-            deleteBtn.addEventListener("drop", (event) => {
-              //할 일 목록에서 삭제
-              TodoList.deleteTodo(list);
-              //상태 목록에서 삭제
-              container.childNodes.forEach((todo) => {
-                if (todo.dataset.key === list.dataset.key) todo.remove();
-              });
-            });
-          });
+        const updatedTodoList = TodoList.paintTodo();
+        updatedTodoList.addEventListener("dragstart", (event) => {
+          changeStatus(event.target);
         });
       });
-      //! 1차 결과: 한 개만 가능 여러개 추가하고 드래그앤드랍시 updateTodo에서 오류가 난다
-      //cloneNode.. -> json,, 분류하는게 더 빠르겠다,,
+
+      //2차
+
+      //상태 리스트 보여주기
+      function paintStatus() {
+        const updatedTodoList = TodoList.paintTodo();
+        updatedTodoList.childNodes.forEach((todo, index) => {
+          containers.forEach((container, index) => {
+            while (container.firstChild) {
+              container.firstChild.remove();
+            }
+            if (
+              container.id === todo.dataset.status &&
+              !container.hasChildNodes(todo)
+            ) {
+              container.appendChild(todo.cloneNode(true));
+            }
+          });
+        });
+      }
+
+      function changeStatus(todo) {
+        containers.forEach((container) => {
+          while (container.firstChild) {
+            container.firstChild.remove();
+          }
+          container.addEventListener("dragover", (e) => e.preventDefault());
+          container.addEventListener("drop", () => {
+            TodoList.updateTodo(todo, container.id);
+            paintStatus();
+          });
+        });
+      }
     </script>
   </body>
 </html>
