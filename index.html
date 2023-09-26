@@ -147,6 +147,7 @@
         paintTodo() {
           //NodeList로 받아와서 상태 변경이 되면 새로 업데이트 해줘야함
           todoList = document.querySelector("#all");
+
           //기존 리스트 지우기
           while (todoList.firstChild) {
             todoList.firstChild.remove();
@@ -155,27 +156,23 @@
           const frag = document.createDocumentFragment();
           //데이터에 맞게 리스트 새로 생성하기
           this.todos.forEach((todo, index) => {
-            console.log(index, todo);
             const li = document.createElement("li");
             li.setAttribute("draggable", true);
             li.innerHTML = `${todo.todo}`;
-            li.key = `${todo.id}`;
+            li.dataset.key = `${todo.id}`;
             li.dataset.status = `${todo?.status}`;
             li.className = `${todo?.status}`;
             frag.append(li);
           });
 
           //새로 생성한 리스트 추가하기
-          todoList.append(frag);
+          todoList.appendChild(frag);
           return todoList;
         }
         updateTodo(todo, status) {
-          const target = this.todos.find((elem) =>
-            todo.key == elem.id ? todo : elem
-          );
+          const target = this.todos.find((elem) => todo.dataset.key == elem.id);
           target.todo = todo.innerText;
           target.setStatus(status ?? todo.dataset.status);
-          this.paintTodo();
         }
         deleteTodo(todo) {
           this.todos = this.todos.filter((elem) => elem.id != todo.key);
@@ -198,55 +195,55 @@
         //할 일 목록을 읽어오기
         todoList = TodoList.paintTodo();
       });
+
+      //전체 투두리스트에서 드래그를 시작하면 대상을 복사하여 변수에 저장한다.
       todoList.addEventListener("dragstart", (event) => {
         selected = event.target.cloneNode(true);
         section.addEventListener("dragover", (e) => e.preventDefault());
       });
-      section.addEventListener("drop", (event) => {
-        containers.forEach((container, listIndex) => {
-          TodoList.updateTodo(selected, event.target.id);
-          paintStatus();
-        });
+
+      //상태 리스트에서 드랍하면 할 일의 상태를 변경하고 상태 리스트를 다시 그린다.
+      //현재 투두리스트를 업데이트해주어 변화된 상태로 표시해준다.
+      archive.addEventListener("drop", (event) => {
+        TodoList.updateTodo(selected, archive.id);
         todoList = TodoList.paintTodo();
+        selected.remove();
+        paintStatus();
       });
-      section.addEventListener("drag", (event) => {
+      progress.addEventListener("drop", (event) => {
+        TodoList.updateTodo(selected, progress.id);
+        todoList = TodoList.paintTodo();
+        selected.remove();
+        paintStatus();
+      });
+      done.addEventListener("drop", (event) => {
+        TodoList.updateTodo(selected, done.id);
+        todoList = TodoList.paintTodo();
+        selected.remove();
+        paintStatus();
+      });
+      //상태 리스트에서 드래그하면 해당 할 일을 변수에 저장한다.
+      section.addEventListener("dragstart", (event) => {
         selected = event.target;
-        if (statusList.find((list) => list === event.target.id))
-          TodoList.updateTodo(selected, event.target.id);
-        containers.forEach((container, listIndex) => {
-          if (container.id === selected.dataset.status) {
-            container.appendChild(selected);
-          } else {
-            selected.remove();
-          }
-        });
       });
       //2차
-
       //상태 리스트 보여주기
       function paintStatus() {
-        while (containers.firstChild) {
-          containers.firstChild.remove();
-        }
-        todoList.childNodes.forEach((todo, todoIndex) => {
-          containers.forEach((container, listIndex) => {
-            if (
-              container.id === todo.dataset.status &&
-              !container.hasChildNodes(todo)
-            ) {
-              container.appendChild(todo);
-            }
-          });
-        });
-      }
+        //상태가 바뀐 리스트가 있으면 해당 상태 리스트에서 제외
+        archive.childNodes.forEach((list) => list.remove());
+        progress.childNodes.forEach((list) => list.remove());
+        done.childNodes.forEach((list) => list.remove());
 
-      function changeStatus(todo) {
-        section.addEventListener("dragover", (e) => e.preventDefault());
-        section.addEventListener("drop", (event) => {
-          if (statusList.find((list) => list === event.target.id))
-            TodoList.updateTodo(todo, event.target.id);
+        //전체 리스트에서 상태 리스트로 복사해 추가하기
+        todoList.childNodes.forEach((todo, todoIndex) => {
+          const copiedToDo = todo.cloneNode(true);
+          if (archive.id === copiedToDo.dataset.status)
+            archive.appendChild(copiedToDo);
+          else if (progress.id === copiedToDo.dataset.status)
+            progress.appendChild(copiedToDo);
+          else if (done.id === copiedToDo.dataset.status)
+            done.appendChild(copiedToDo);
         });
-        paintStatus();
       }
       //3차 컨테이너를 ul을 별도로 다 따로 두는 것이 아닌 ul을 포함하고 있는 상위의 section을 한 번에 불러와서 내부에서 조작하기
     </script>
