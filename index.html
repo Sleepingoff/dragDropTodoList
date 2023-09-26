@@ -175,7 +175,7 @@
           target.setStatus(status ?? todo.dataset.status);
         }
         deleteTodo(todo) {
-          this.todos = this.todos.filter((elem) => elem.id != todo.key);
+          this.todos = this.todos.filter((elem) => elem.id != todo.dataset.key);
         }
       }
 
@@ -246,6 +246,14 @@
         });
       }
       //3차 컨테이너를 ul을 별도로 다 따로 두는 것이 아닌 ul을 포함하고 있는 상위의 section을 한 번에 불러와서 내부에서 조작하기
+
+      //4차 할 일 삭제하기
+      deleteBtn.addEventListener("dragover", (e) => e.preventDefault());
+      deleteBtn.addEventListener("drop", () => {
+        TodoList.deleteTodo(selected);
+        todoList = TodoList.paintTodo();
+        paintStatus();
+      });
     </script>
   </body>
 </html>
