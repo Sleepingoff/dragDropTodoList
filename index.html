@@ -12,26 +12,27 @@
       article {
         flex-shrink: 0;
       }
-      div.wrap {
-        flex-shrink: 1;
+      section {
         flex-grow: 1;
+        flex-shrink: 1;
         display: flex;
         align-items: start;
         box-shadow: 5px 5px 10px #ccc;
         padding: 0 10px;
       }
-      div.wrap hr {
+      section hr {
         margin: 10px;
         align-self: stretch;
       }
-      div.wrap section {
+      section div {
+        flex-grow: 1;
         margin: auto;
         width: 100%;
       }
-      div.wrap section h2 {
+      section h2 {
         text-align: center;
       }
-      div.wrap section ul {
+      section ul {
         box-sizing: border-box;
         width: 100%;
         padding: 10px;
@@ -85,25 +86,26 @@
         </form>
         <ul id="all"></ul>
       </article>
-      <div class="wrap">
-        <section>
+      <section class="wrap">
+        <div>
           <h2>Archive</h2>
           <ul id="archive"></ul>
-        </section>
+        </div>
         <hr />
-        <section>
+        <div>
           <h2>Progress</h2>
           <ul id="progress"></ul>
-        </section>
+        </div>
         <hr />
-        <section>
+        <div>
           <h2>Done</h2>
           <ul id="done"></ul>
-        </section>
-      </div>
+        </div>
+      </section>
     </main>
     <button id="delete">delete</button>
     <script>
+      const section = document.querySelector("section.wrap");
       const containers = document.querySelectorAll("section ul");
       const archive = document.querySelector("#archive");
       const progress = document.querySelector("#progress");
@@ -112,6 +114,8 @@
       const todoInput = todoForm.querySelector("input");
       const addBtn = todoForm.querySelector("#add");
       const deleteBtn = document.querySelector("#delete");
+      let todoList = document.querySelector("#all");
+      let selected;
 
       /**
        * todo status: archive, progress, done
@@ -119,7 +123,7 @@
        * **/
       class ToDo {
         constructor(newTodo) {
-          this.id = Math.random(new Date());
+          this.id = parseInt(Math.random(new Date()) * 100000);
           this.todo = newTodo;
           this.status = "";
         }
@@ -142,7 +146,7 @@
         }
         paintTodo() {
           //NodeList로 받아와서 상태 변경이 되면 새로 업데이트 해줘야함
-          const todoList = document.querySelector("#all");
+          todoList = document.querySelector("#all");
           //기존 리스트 지우기
           while (todoList.firstChild) {
             todoList.firstChild.remove();
@@ -150,7 +154,8 @@
 
           const frag = document.createDocumentFragment();
           //데이터에 맞게 리스트 새로 생성하기
-          this.todos.forEach((todo) => {
+          this.todos.forEach((todo, index) => {
+            console.log(index, todo);
             const li = document.createElement("li");
             li.setAttribute("draggable", true);
             li.innerHTML = `${todo.todo}`;
@@ -170,6 +175,7 @@
           );
           target.todo = todo.innerText;
           target.setStatus(status ?? todo.dataset.status);
+          this.paintTodo();
         }
         deleteTodo(todo) {
           this.todos = this.todos.filter((elem) => elem.id != todo.key);
@@ -190,44 +196,59 @@
         todoInput.value = "";
 
         //할 일 목록을 읽어오기
-        const updatedTodoList = TodoList.paintTodo();
-        updatedTodoList.addEventListener("dragstart", (event) => {
-          changeStatus(event.target);
+        todoList = TodoList.paintTodo();
+      });
+      todoList.addEventListener("dragstart", (event) => {
+        selected = event.target.cloneNode(true);
+        section.addEventListener("dragover", (e) => e.preventDefault());
+      });
+      section.addEventListener("drop", (event) => {
+        containers.forEach((container, listIndex) => {
+          TodoList.updateTodo(selected, event.target.id);
+          paintStatus();
+        });
+        todoList = TodoList.paintTodo();
+      });
+      section.addEventListener("drag", (event) => {
+        selected = event.target;
+        if (statusList.find((list) => list === event.target.id))
+          TodoList.updateTodo(selected, event.target.id);
+        containers.forEach((container, listIndex) => {
+          if (container.id === selected.dataset.status) {
+            container.appendChild(selected);
+          } else {
+            selected.remove();
+          }
         });
       });
-
       //2차
 
       //상태 리스트 보여주기
       function paintStatus() {
-        const updatedTodoList = TodoList.paintTodo();
-        updatedTodoList.childNodes.forEach((todo, index) => {
-          containers.forEach((container, index) => {
-            while (container.firstChild) {
-              container.firstChild.remove();
-            }
+        while (containers.firstChild) {
+          containers.firstChild.remove();
+        }
+        todoList.childNodes.forEach((todo, todoIndex) => {
+          containers.forEach((container, listIndex) => {
             if (
               container.id === todo.dataset.status &&
               !container.hasChildNodes(todo)
             ) {
-              container.appendChild(todo.cloneNode(true));
+              container.appendChild(todo);
             }
           });
         });
       }
 
       function changeStatus(todo) {
-        containers.forEach((container) => {
-          while (container.firstChild) {
-            container.firstChild.remove();
-          }
-          container.addEventListener("dragover", (e) => e.preventDefault());
-          container.addEventListener("drop", () => {
-            TodoList.updateTodo(todo, container.id);
-            paintStatus();
-          });
+        section.addEventListener("dragover", (e) => e.preventDefault());
+        section.addEventListener("drop", (event) => {
+          if (statusList.find((list) => list === event.target.id))
+            TodoList.updateTodo(todo, event.target.id);
         });
+        paintStatus();
       }
+      //3차 컨테이너를 ul을 별도로 다 따로 두는 것이 아닌 ul을 포함하고 있는 상위의 section을 한 번에 불러와서 내부에서 조작하기
     </script>
   </body>
 </html>
