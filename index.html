@@ -11,17 +11,19 @@
   <body>
     <header><h1>ToDoList</h1></header>
     <main>
-      <form action="submit" id="status">
-        <input type="text" />
-        <button id="add-status">new status</button>
-      </form>
+      <article>
+        <form action="submit" id="status">
+          <input type="text" />
+          <button id="add-status">new status</button>
+        </form>
+        <ul class="status-btns"></ul>
+      </article>
 
       <article>
         <form action="submit" id="todo">
           <input type="text" />
           <button id="add">ADD</button>
         </form>
-        <ul class="status-btns"></ul>
         <ul id="all"></ul>
       </article>
       <section class="wrap"></section>

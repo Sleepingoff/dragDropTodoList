@@ -1,4 +1,4 @@
-import Store from "./store.js";
+import store from "./store.js";
 import ToDo from "./ToDo.js";
 import ToDoManager from "./ToDoManager.js";
 import Status from "./Status.js";
@@ -9,7 +9,6 @@ const section = document.querySelector("section.wrap");
 
 export { section };
 
-const store = new Store();
 const TodoList = new ToDoManager();
 const statusManger = new StatusManger();
 
@@ -34,6 +33,11 @@ statusForm.addEventListener("submit", (event) => {
   statusInput.value = "";
 });
 
+//TODO: 상태 클릭 시 상태만 삭제하는 기능
+statusBtn.childNodes.forEach((btn) => {
+  btn.addEventListener("click", () => {});
+});
+
 todoForm.addEventListener("submit", (event) => {
   event.preventDefault();
   if (!todoInput.value) {
@@ -45,16 +49,16 @@ todoForm.addEventListener("submit", (event) => {
   todoInput.value = "";
 
   //할 일 목록을 읽어오기
-  TodoList.paintTodo();
   store.updateStore();
+  TodoList.paintTodo();
 });
 
 //4차 할 일 삭제하기
 deleteBtn.addEventListener("dragover", (e) => e.preventDefault());
 deleteBtn.addEventListener("drop", () => {
   TodoList.deleteTodo(store.selected);
-  TodoList.paintTodo();
   store.updateStore();
+  TodoList.paintTodo();
   statusManger.paintStatus();
 });
 
@@ -71,16 +75,18 @@ section.addEventListener("drop", () => {
   paintStatus();
 });
 
-this.list.addEventListener("dragstart", (event) => {
-  selected = event.target;
-});
-this.list.addEventListener("dragover", () => {
-  TodoList.updateTodo(selected, archive.id);
-});
+statusManger.list.forEach((statusList) => {
+  statusList.addEventListener("dragstart", (event) => {
+    selected = event.target;
+  });
+  statusList.addEventListener("dragover", () => {
+    TodoList.updateTodo(selected, archive.id);
+  });
 
-this.list.removeEventListener("dragstart", (event) => {
-  selected = event.target;
-});
-this.list.addEventListener("dragover", () => {
-  TodoList.updateTodo(selected, archive.id);
+  statusListt.removeEventListener("dragstart", (event) => {
+    selected = event.target;
+  });
+  statusListt.addEventListener("dragover", () => {
+    TodoList.updateTodo(selected, archive.id);
+  });
 });

@@ -11,6 +11,12 @@ class Store {
     this.todos = document.querySelector("#all");
     this.containers = document.querySelectorAll("section ul");
   }
+  updateToDos(todos) {
+    while (this.todos.firstChild) {
+      this.todos.firstChild.remove();
+    }
+    this.todos.append(todos);
+  }
 }
-
-export default Store;
+const store = new Store();
+export default store;

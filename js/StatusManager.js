@@ -1,9 +1,11 @@
 import { section } from "./index.js";
 import Status from "./Status.js";
+import store from "./store.js";
 
 class StatusManger {
   constructor() {
     this.status = [];
+    this.list = [];
   }
 
   updateStatus(status) {
@@ -18,6 +20,7 @@ class StatusManger {
     `;
     section.append(div);
     const list = div.querySelector("ul");
+    this.list = [...this.list, list];
     return list;
   }
 
@@ -25,16 +28,19 @@ class StatusManger {
     const li = document.createElement("li");
     li.innerHTML = `<button>${status}</button>`;
     return li;
-    // this.list.childNodes.forEach((list) => {
-    //   if (list != selected) list.remove();
-    // });
-    //전체 리스트에서 상태 리스트로 복사해 추가하기
-    // todoList.childNodes.forEach((todo) => {
-    //   const copiedToDo = todo.cloneNode(true);
-    //   if (this.list.id === copiedToDo.dataset.status)
-    //     this.list.appendChild(copiedToDo);
-    // });
-    // selected.remove();
+  }
+  paintStatusList() {
+    this.list.forEach((list) => {
+      list.childNodes.forEach((li) => {
+        if (li != store.selected) li.remove();
+      });
+      //전체 리스트에서 상태 리스트로 복사해 추가하기
+      store.todos.childNodes.forEach((todo) => {
+        const copiedToDo = todo.cloneNode(true);
+        if (list.id === copiedToDo.dataset.status) list.appendChild(copiedToDo);
+      });
+      store.updateStore();
+    });
   }
 }
 

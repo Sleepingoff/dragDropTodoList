@@ -1,4 +1,5 @@
 import ToDo from "./ToDo.js";
+import store from "./store.js";
 class ToDoManager {
   constructor() {
     this.todos = [];
@@ -11,7 +12,7 @@ class ToDoManager {
   paintTodo() {
     const frag = document.createDocumentFragment();
     //데이터에 맞게 리스트 새로 생성하기
-    this.todos.forEach((todo, index) => {
+    this.todos.forEach((todo) => {
       const li = document.createElement("li");
       li.setAttribute("draggable", true);
       li.innerHTML = `${todo.todo}`;
@@ -21,8 +22,7 @@ class ToDoManager {
 
       frag.append(li);
     });
-
-    return frag;
+    store.updateToDos(frag);
   }
   updateTodo(todo, status) {
     const target = this.todos.find((elem) => todo?.dataset.key == elem.id);
