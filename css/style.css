@@ -1,0 +1,85 @@
+main {
+    display: flex;
+}
+
+article {
+    flex-shrink: 0;
+}
+
+section {
+    flex-grow: 1;
+    flex-shrink: 1;
+    display: flex;
+    align-items: start;
+    box-shadow: 5px 5px 10px #ccc;
+    padding: 0 10px;
+}
+
+section hr {
+    margin: 10px;
+    align-self: stretch;
+}
+
+section div {
+    flex-grow: 1;
+    margin: auto;
+    width: 100%;
+}
+
+section h2 {
+    text-align: center;
+}
+
+section ul {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    box-shadow: inset 0px 0px 5px #ccc;
+}
+
+#archive {
+    color: #333;
+}
+
+li {
+    display: flex;
+    margin: 5px;
+}
+
+.archive {
+    color: #333;
+}
+
+.archive::before {
+    content: "archive";
+    background-color: yellow;
+    color: orange;
+}
+
+#progress {
+    font-weight: bold;
+}
+
+.progress {
+    font-weight: bold;
+}
+
+.progress::before {
+    content: "progress";
+    background-color: green;
+    color: greenyellow;
+}
+
+#done {
+    color: #ccc;
+}
+
+.done {
+    color: #ccc;
+}
+
+.done::before {
+    content: "done";
+    background-color: #333;
+    color: #ccc;
+}
