@@ -1,8 +1,8 @@
 //전역 상태 관리
 
 class Store {
-  constructor(selected) {
-    this.selected = selected;
+  constructor() {
+    this.selected;
     this.todos = document.querySelector("#all");
     this.containers = document.querySelectorAll("section ul");
   }
@@ -10,6 +10,12 @@ class Store {
     this.selected = selected;
     this.todos = document.querySelector("#all");
     this.containers = document.querySelectorAll("section ul");
+    this.containers.forEach((container) => {
+      container.addEventListener("dragstart", (event) => {
+        console.log(event.target);
+        store.updateStore(event.target);
+      });
+    });
   }
   updateToDos(todos) {
     while (this.todos.firstChild) {

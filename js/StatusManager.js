@@ -39,8 +39,8 @@ class StatusManger {
         const copiedToDo = todo.cloneNode(true);
         if (list.id === copiedToDo.dataset.status) list.appendChild(copiedToDo);
       });
-      store.updateStore();
     });
+    store.updateStore();
   }
 }
 

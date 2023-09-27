@@ -59,7 +59,7 @@ deleteBtn.addEventListener("drop", () => {
   TodoList.deleteTodo(store.selected);
   store.updateStore();
   TodoList.paintTodo();
-  statusManger.paintStatus();
+  statusManger.paintStatusList();
 });
 
 store.todos.childNodes.forEach((todo) => {
@@ -70,23 +70,13 @@ store.todos.childNodes.forEach((todo) => {
 
 section.addEventListener("dragover", (e) => e.preventDefault());
 
-section.addEventListener("drop", () => {
-  todoList = TodoList.paintTodo();
-  paintStatus();
+section.addEventListener("drop", (event) => {
+  TodoList.updateTodo(store.selected, event.target.id);
+  store.updateStore();
+  TodoList.paintTodo();
+  statusManger.paintStatusList();
 });
 
-statusManger.list.forEach((statusList) => {
-  statusList.addEventListener("dragstart", (event) => {
-    selected = event.target;
-  });
-  statusList.addEventListener("dragover", () => {
-    TodoList.updateTodo(selected, archive.id);
-  });
-
-  statusListt.removeEventListener("dragstart", (event) => {
-    selected = event.target;
-  });
-  statusListt.addEventListener("dragover", () => {
-    TodoList.updateTodo(selected, archive.id);
-  });
+store.todos.addEventListener("dragstart", (event) => {
+  store.updateStore(event.target);
 });
