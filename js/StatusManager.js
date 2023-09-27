@@ -6,8 +6,12 @@ class StatusManger {
   constructor() {
     this.status = [];
     this.list = [];
+    this.todos = [];
   }
-
+  getToDos(todos) {
+    this.todos = [...todos];
+    this.paintStatusList();
+  }
   updateStatus(status) {
     this.status = [...this.status, new Status(status)];
     this.createStatusList(status);
@@ -31,16 +35,21 @@ class StatusManger {
   }
   paintStatusList() {
     this.list.forEach((list) => {
-      list.childNodes.forEach((li) => {
-        if (li != store.selected) li.remove();
-      });
-      //전체 리스트에서 상태 리스트로 복사해 추가하기
-      store.todos.childNodes.forEach((todo) => {
-        const copiedToDo = todo.cloneNode(true);
-        if (list.id === copiedToDo.dataset.status) list.appendChild(copiedToDo);
+      while (list.firstChild) {
+        console.log("remove", list.firstChild);
+        list.firstChild.remove();
+      }
+    });
+    this.todos.forEach((todo) => {
+      const li = document.createElement("li");
+      li.setAttribute("draggable", true);
+      li.innerHTML = `${todo.todo}`;
+      li.dataset.key = todo.id;
+      li.dataset.status = todo.status;
+      this.list.forEach((list) => {
+        if (list.id === li.dataset.status) list.append(li);
       });
     });
-    store.updateStore();
   }
 }
 

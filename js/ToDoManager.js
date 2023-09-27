@@ -28,6 +28,7 @@ class ToDoManager {
     const target = this.todos.find((elem) => todo?.dataset.key == elem.id);
     target.todo = todo.innerText;
     target.setStatus(status ?? todo.dataset.status);
+    this.paintTodo();
   }
   deleteTodo(todo) {
     this.todos = this.todos.filter((elem) => elem.id != todo.dataset.key);

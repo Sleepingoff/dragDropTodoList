@@ -51,32 +51,38 @@ todoForm.addEventListener("submit", (event) => {
   //할 일 목록을 읽어오기
   store.updateStore();
   TodoList.paintTodo();
+  statusManger.getToDos(TodoList.todos);
 });
 
 //4차 할 일 삭제하기
 deleteBtn.addEventListener("dragover", (e) => e.preventDefault());
 deleteBtn.addEventListener("drop", () => {
   TodoList.deleteTodo(store.selected);
-  store.updateStore();
   TodoList.paintTodo();
-  statusManger.paintStatusList();
+  store.updateStore();
+  statusManger.getToDos(TodoList.todos);
 });
 
 store.todos.childNodes.forEach((todo) => {
   todo.addEventListener("dragstart", (event) => {
     store.updateStore(event.currentTarget);
+    statusManger.getToDos(TodoList.todos);
   });
 });
 
-section.addEventListener("dragover", (e) => e.preventDefault());
-
-section.addEventListener("drop", (event) => {
-  TodoList.updateTodo(store.selected, event.target.id);
-  store.updateStore();
-  TodoList.paintTodo();
-  statusManger.paintStatusList();
+section.addEventListener("dragover", (event) => {
+  event.preventDefault();
 });
 
-store.todos.addEventListener("dragstart", (event) => {
+section.addEventListener("drop", (event) => {
+  if (event.target.nodeName === "UL") {
+    TodoList.updateTodo(store.selected, event.target.id);
+    store.updateStore();
+    statusManger.getToDos(TodoList.todos);
+  }
+});
+
+section.addEventListener("dragstart", (event) => {
+  console.log(event.target);
   store.updateStore(event.target);
 });

@@ -4,24 +4,21 @@ class Store {
   constructor() {
     this.selected;
     this.todos = document.querySelector("#all");
-    this.containers = document.querySelectorAll("section ul");
   }
   updateStore(selected) {
     this.selected = selected;
     this.todos = document.querySelector("#all");
-    this.containers = document.querySelectorAll("section ul");
-    this.containers.forEach((container) => {
-      container.addEventListener("dragstart", (event) => {
-        console.log(event.target);
-        store.updateStore(event.target);
-      });
-    });
   }
   updateToDos(todos) {
     while (this.todos.firstChild) {
       this.todos.firstChild.remove();
     }
     this.todos.append(todos);
+    this.todos.childNodes.forEach((todo) => {
+      todo.addEventListener("dragstart", (event) => {
+        this.updateStore(event.target);
+      });
+    });
   }
 }
 const store = new Store();
