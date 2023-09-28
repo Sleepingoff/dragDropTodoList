@@ -4,7 +4,6 @@ import ToDoManager from "./ToDoManager.js";
 import Status from "./Status.js";
 import StatusManger from "./StatusManager.js";
 
-const statusBtn = document.querySelector("ul.status-btns");
 const section = document.querySelector("section.wrap");
 
 export { section };
@@ -28,15 +27,11 @@ statusForm.addEventListener("submit", (event) => {
   const newStatus = statusInput.value;
 
   statusManger.updateStatus(newStatus);
-  statusBtn.append(statusManger.paintStatus(newStatus));
+  statusManger.paintStatus(newStatus);
 
   statusInput.value = "";
 });
-
 //TODO: 상태 클릭 시 상태만 삭제하는 기능
-statusBtn.childNodes.forEach((btn) => {
-  btn.addEventListener("click", () => {});
-});
 
 todoForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -83,6 +78,5 @@ section.addEventListener("drop", (event) => {
 });
 
 section.addEventListener("dragstart", (event) => {
-  console.log(event.target);
   store.updateStore(event.target);
 });

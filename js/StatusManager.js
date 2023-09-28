@@ -1,10 +1,10 @@
 import { section } from "./index.js";
 import Status from "./Status.js";
-import store from "./store.js";
-
+const statusBtn = document.querySelector("ul.status-btns");
 class StatusManger {
   constructor() {
     this.status = [];
+    this.statusBtns = [];
     this.list = [];
     this.todos = [];
   }
@@ -13,6 +13,10 @@ class StatusManger {
     this.paintStatusList();
   }
   updateStatus(status) {
+    if (this.status.includes(status)) {
+      alert("이미 존재하는 상태입니다.");
+      return false;
+    }
     this.status = [...this.status, new Status(status)];
     this.createStatusList(status);
   }
@@ -22,6 +26,7 @@ class StatusManger {
         <h2>${status}</h2>
         <ul id="${status}" class="status-list"></ul>
     `;
+    div.dataset.key = status;
     section.append(div);
     const list = div.querySelector("ul");
     this.list = [...this.list, list];
@@ -31,12 +36,17 @@ class StatusManger {
   paintStatus(status) {
     const li = document.createElement("li");
     li.innerHTML = `<button>${status}</button>`;
-    return li;
+    li.dataset.key = status;
+    this.statusBtns = [...this.statusBtns, li];
+    li.addEventListener("click", (event) => {
+      this.deleteStatus(event.currentTarget.dataset.key);
+      statusBtn.append(...this.statusBtns);
+    });
+    statusBtn.append(...this.statusBtns);
   }
   paintStatusList() {
     this.list.forEach((list) => {
       while (list.firstChild) {
-        console.log("remove", list.firstChild);
         list.firstChild.remove();
       }
     });
@@ -49,6 +59,33 @@ class StatusManger {
       this.list.forEach((list) => {
         if (list.id === li.dataset.status) list.append(li);
       });
+    });
+  }
+  deleteStatus(status) {
+    this.todos.forEach((todo) => {
+      if (todo.status === status) {
+        todo.status = "";
+      }
+    });
+
+    this.status = this.status.filter((elem) => elem.status != status);
+    this.statusBtns.length = 0;
+    this.list = this.list.filter((list) => list.dataset.status != status);
+    this.status.forEach((list) => {
+      this.paintStatus(list.status);
+    });
+    while (statusBtn.firstChild) {
+      statusBtn.firstChild.remove();
+    }
+    this.deleteStatusList(status);
+    this.paintStatusList();
+  }
+  deleteStatusList(status) {
+    section.childNodes.forEach((list) => {
+      console.log(list, ",", status);
+      if (list.dataset.key === status) {
+        list.remove();
+      }
     });
   }
 }
