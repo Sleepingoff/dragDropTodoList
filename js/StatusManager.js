@@ -37,6 +37,7 @@ class StatusManger {
     const li = document.createElement("li");
     li.innerHTML = `<button>${status}</button>`;
     li.dataset.key = status;
+    li.className = status;
     this.statusBtns = [...this.statusBtns, li];
     li.addEventListener("click", (event) => {
       this.deleteStatus(event.currentTarget.dataset.key);
@@ -82,7 +83,6 @@ class StatusManger {
   }
   deleteStatusList(status) {
     section.childNodes.forEach((list) => {
-      console.log(list, ",", status);
       if (list.dataset.key === status) {
         list.remove();
       }

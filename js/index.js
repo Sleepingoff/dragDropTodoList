@@ -18,6 +18,14 @@ const todoForm = document.querySelector("#todo");
 const todoInput = todoForm.querySelector("input");
 const deleteBtn = document.querySelector("#delete");
 
+//기본 상태 제공하기
+statusManger.paintStatus(`archive`);
+statusManger.paintStatus(`progress`);
+statusManger.paintStatus(`done`);
+statusManger.createStatusList(`archive`);
+statusManger.createStatusList(`progress`);
+statusManger.createStatusList(`done`);
+
 statusForm.addEventListener("submit", (event) => {
   event.preventDefault();
   if (!statusInput.value) {
@@ -31,7 +39,6 @@ statusForm.addEventListener("submit", (event) => {
 
   statusInput.value = "";
 });
-//TODO: 상태 클릭 시 상태만 삭제하는 기능
 
 todoForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -49,7 +56,7 @@ todoForm.addEventListener("submit", (event) => {
   statusManger.getToDos(TodoList.todos);
 });
 
-//4차 할 일 삭제하기
+//할 일 삭제하기
 deleteBtn.addEventListener("dragover", (e) => e.preventDefault());
 deleteBtn.addEventListener("drop", () => {
   TodoList.deleteTodo(store.selected);

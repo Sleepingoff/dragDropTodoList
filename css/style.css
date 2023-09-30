@@ -1,5 +1,11 @@
+button {
+    border: none;
+    background-color: transparent;
+}
+
 main {
     display: flex;
+    flex-wrap: wrap;
 }
 
 article {
@@ -15,15 +21,9 @@ section {
     padding: 0 10px;
 }
 
-section hr {
-    margin: 10px;
-    align-self: stretch;
-}
-
 section div {
     flex-grow: 1;
     margin: auto;
-    width: 100%;
 }
 
 section h2 {
@@ -37,35 +37,34 @@ section ul {
     box-shadow: inset 0px 0px 5px #ccc;
 }
 
-#archive {
-    color: #333;
-}
-
 li {
     display: flex;
     margin: 5px;
 }
 
-.archive {
+ul.status-btns li>button {
+    border-radius: 9999px;
+    background-color: #ccc;
+    color: black;
+}
+
+#archive {
     color: #333;
 }
 
-.archive::before {
-    content: "archive";
+ul.status-btns .archive>button {
+    color: #333;
     background-color: yellow;
     color: orange;
 }
+
 
 #progress {
     font-weight: bold;
 }
 
-.progress {
+ul.status-btns .progress>button {
     font-weight: bold;
-}
-
-.progress::before {
-    content: "progress";
     background-color: green;
     color: greenyellow;
 }
@@ -74,17 +73,8 @@ li {
     color: #ccc;
 }
 
-.done {
+ul.status-btns .done>button {
     color: #ccc;
-}
-
-.done::before {
-    content: "done";
     background-color: #333;
     color: #ccc;
-}
-
-#delete {
-    background-color: transparent;
-    border-style: none;
 }
