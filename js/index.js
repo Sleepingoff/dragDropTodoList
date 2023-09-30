@@ -54,6 +54,15 @@ todoForm.addEventListener("submit", (event) => {
   store.updateStore();
   TodoList.paintTodo();
   statusManger.getToDos(TodoList.todos);
+
+  store.todos.childNodes.forEach((todo) => {
+    todo.addEventListener("dragstart", (event) => {
+      const selected = event.currentTarget;
+      const selectedInfo = { ...selected.dataset, todo: selected.textContent };
+      store.updateStore(selectedInfo);
+      statusManger.getToDos(TodoList.todos, handleDoubleClick);
+    });
+  });
 });
 
 //할 일 삭제하기
@@ -62,14 +71,7 @@ deleteBtn.addEventListener("drop", () => {
   TodoList.deleteTodo(store.selected);
   TodoList.paintTodo();
   store.updateStore();
-  statusManger.getToDos(TodoList.todos);
-});
-
-store.todos.childNodes.forEach((todo) => {
-  todo.addEventListener("dragstart", (event) => {
-    store.updateStore(event.currentTarget);
-    statusManger.getToDos(TodoList.todos);
-  });
+  statusManger.getToDos(TodoList.todos, handleDoubleClick);
 });
 
 section.addEventListener("dragover", (event) => {
@@ -80,10 +82,32 @@ section.addEventListener("drop", (event) => {
   if (event.target.nodeName === "UL") {
     TodoList.updateTodo(store.selected, event.target.id);
     store.updateStore();
-    statusManger.getToDos(TodoList.todos);
+    statusManger.getToDos(TodoList.todos, handleDoubleClick);
   }
 });
 
 section.addEventListener("dragstart", (event) => {
-  store.updateStore(event.target);
+  store.updateStore({
+    ...event.target.dataset,
+    todo: event.target.textContent,
+  });
+});
+
+const input = document.createElement("input");
+
+//ToDo: input에 dataset 넘겨주기
+
+const handleDoubleClick = (event) => {
+  const prevTodo = event.currentTarget;
+  input.value = prevTodo.textContent;
+  input.dataset.key = prevTodo.dataset.key;
+  input.dataset.status = prevTodo.dataset.status;
+  prevTodo.textContent = "";
+  prevTodo.append(input);
+  input.focus();
+};
+input.addEventListener("blur", (event) => {
+  TodoList.updateTodo({ ...input.dataset, todo: event.target.value });
+  statusManger.getToDos(TodoList.todos, handleDoubleClick);
+  input.remove();
 });

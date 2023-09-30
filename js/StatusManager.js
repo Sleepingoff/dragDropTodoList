@@ -1,5 +1,6 @@
 import { section } from "./index.js";
 import Status from "./Status.js";
+import ToDoManager from "./ToDoManager.js";
 const statusBtn = document.querySelector("ul.status-btns");
 class StatusManger {
   constructor() {
@@ -8,9 +9,9 @@ class StatusManger {
     this.list = [];
     this.todos = [];
   }
-  getToDos(todos) {
+  getToDos(todos, handleDoubleClick) {
     this.todos = [...todos];
-    this.paintStatusList();
+    this.paintStatusList(handleDoubleClick);
   }
   updateStatus(status) {
     if (this.status.includes(status)) {
@@ -45,7 +46,7 @@ class StatusManger {
     });
     statusBtn.append(...this.statusBtns);
   }
-  paintStatusList() {
+  paintStatusList(handleDoubleClick) {
     this.list.forEach((list) => {
       while (list.firstChild) {
         list.firstChild.remove();
@@ -60,6 +61,7 @@ class StatusManger {
       this.list.forEach((list) => {
         if (list.id === li.dataset.status) list.append(li);
       });
+      li.addEventListener("dblclick", handleDoubleClick);
     });
   }
   deleteStatus(status) {

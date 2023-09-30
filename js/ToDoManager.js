@@ -25,9 +25,9 @@ class ToDoManager {
     store.updateToDos(frag);
   }
   updateTodo(todo, status) {
-    const target = this.todos.find((elem) => todo?.dataset.key == elem.id);
-    target.todo = todo.innerText;
-    target.setStatus(status ?? todo.dataset.status);
+    const target = this.todos.find((elem) => todo?.key == elem.id);
+    target.todo = todo.todo;
+    target.setStatus(status ?? todo.status);
     this.paintTodo();
   }
   deleteTodo(todo) {
