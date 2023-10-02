@@ -1,15 +1,13 @@
 import store from "./store.js";
-import ToDo from "./ToDo.js";
 import ToDoManager from "./ToDoManager.js";
-import Status from "./Status.js";
-import StatusManger from "./StatusManager.js";
+import StatusManager from "./StatusManager.js";
 
 const section = document.querySelector("section.wrap");
 
 export { section };
 
 const TodoList = new ToDoManager();
-const statusManger = new StatusManger();
+const statusManger = new StatusManager();
 
 const statusForm = document.querySelector("#status");
 const statusInput = statusForm.querySelector("input");
@@ -60,7 +58,7 @@ todoForm.addEventListener("submit", (event) => {
       const selected = event.currentTarget;
       const selectedInfo = { ...selected.dataset, todo: selected.textContent };
       store.updateStore(selectedInfo);
-      statusManger.getToDos(TodoList.todos, handleDoubleClick);
+      statusManger.getToDos(TodoList.todos);
     });
   });
 });
@@ -71,7 +69,7 @@ deleteBtn.addEventListener("drop", () => {
   TodoList.deleteTodo(store.selected);
   TodoList.paintTodo();
   store.updateStore();
-  statusManger.getToDos(TodoList.todos, handleDoubleClick);
+  statusManger.getToDos(TodoList.todos);
 });
 
 section.addEventListener("dragover", (event) => {
@@ -82,7 +80,7 @@ section.addEventListener("drop", (event) => {
   if (event.target.nodeName === "UL") {
     TodoList.updateTodo(store.selected, event.target.id);
     store.updateStore();
-    statusManger.getToDos(TodoList.todos, handleDoubleClick);
+    statusManger.getToDos(TodoList.todos);
   }
 });
 
@@ -93,21 +91,14 @@ section.addEventListener("dragstart", (event) => {
   });
 });
 
-const input = document.createElement("input");
+// const handleDoubleClickTodo = (event) => {
+//   const valueManager = new ValueManager(event.currentTarget);
+//   const dataset = valueManager.targetData;
+//   valueManager.appendInput();
 
-//ToDo: input에 dataset 넘겨주기
+//   const newValue = valueManager.value;
+//   TodoList.updateTodo({ ...dataset, todo: newValue });
+//   statusManger.getToDos(TodoList.todos, handleDoubleClickTodo);
+// };
 
-const handleDoubleClick = (event) => {
-  const prevTodo = event.currentTarget;
-  input.value = prevTodo.textContent;
-  input.dataset.key = prevTodo.dataset.key;
-  input.dataset.status = prevTodo.dataset.status;
-  prevTodo.textContent = "";
-  prevTodo.append(input);
-  input.focus();
-};
-input.addEventListener("blur", (event) => {
-  TodoList.updateTodo({ ...input.dataset, todo: event.target.value });
-  statusManger.getToDos(TodoList.todos, handleDoubleClick);
-  input.remove();
-});
+//더블클릭 -> 인풋 생성 -> 인풋 블러 -> 값 가져오기

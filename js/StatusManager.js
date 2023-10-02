@@ -1,17 +1,16 @@
 import { section } from "./index.js";
 import Status from "./Status.js";
-import ToDoManager from "./ToDoManager.js";
 const statusBtn = document.querySelector("ul.status-btns");
-class StatusManger {
+class StatusManager {
   constructor() {
     this.status = [];
     this.statusBtns = [];
     this.list = [];
     this.todos = [];
   }
-  getToDos(todos, handleDoubleClick) {
+  getToDos(todos) {
     this.todos = [...todos];
-    this.paintStatusList(handleDoubleClick);
+    this.paintStatusList();
   }
   updateStatus(status) {
     if (this.status.includes(status)) {
@@ -21,6 +20,7 @@ class StatusManger {
     this.status = [...this.status, new Status(status)];
     this.createStatusList(status);
   }
+  //추가된 상태에 대한 리스트를 화면에 그려준다.
   createStatusList(status) {
     const div = document.createElement("div");
     div.innerHTML = `
@@ -33,7 +33,7 @@ class StatusManger {
     this.list = [...this.list, list];
     return list;
   }
-
+  //추가된 상태를 화면에 그려준다.
   paintStatus(status) {
     const li = document.createElement("li");
     li.innerHTML = `<button>${status}</button>`;
@@ -46,7 +46,8 @@ class StatusManger {
     });
     statusBtn.append(...this.statusBtns);
   }
-  paintStatusList(handleDoubleClick) {
+  //바뀐 상태에 대한 리스트를 화면에 그려준다.
+  paintStatusList() {
     this.list.forEach((list) => {
       while (list.firstChild) {
         list.firstChild.remove();
@@ -55,13 +56,13 @@ class StatusManger {
     this.todos.forEach((todo) => {
       const li = document.createElement("li");
       li.setAttribute("draggable", true);
-      li.innerHTML = `${todo.todo}`;
+      li.innerHTML = `${todo.value}`;
       li.dataset.key = todo.id;
       li.dataset.status = todo.status;
       this.list.forEach((list) => {
         if (list.id === li.dataset.status) list.append(li);
       });
-      li.addEventListener("dblclick", handleDoubleClick);
+      // li.addEventListener("dblclick", handleDoubleClick);
     });
   }
   deleteStatus(status) {
@@ -92,4 +93,4 @@ class StatusManger {
   }
 }
 
-export default StatusManger;
+export default StatusManager;

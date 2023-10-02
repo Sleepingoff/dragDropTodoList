@@ -5,7 +5,7 @@
 class ToDo {
   constructor(newTodo) {
     this.id = parseInt(Math.random(new Date()) * 100000);
-    this.todo = newTodo;
+    this.value = newTodo;
     this.status = "";
   }
   setStatus(status) {

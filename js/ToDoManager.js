@@ -15,7 +15,7 @@ class ToDoManager {
     this.todos.forEach((todo) => {
       const li = document.createElement("li");
       li.setAttribute("draggable", true);
-      li.innerHTML = `${todo.todo}`;
+      li.innerHTML = `${todo.value}`;
       li.dataset.key = `${todo.id}`;
       li.dataset.status = `${todo?.status}`;
       li.className = `${todo?.status}`;
@@ -26,7 +26,7 @@ class ToDoManager {
   }
   updateTodo(todo, status) {
     const target = this.todos.find((elem) => todo?.key == elem.id);
-    target.todo = todo.todo;
+    target.todo = todo.value;
     target.setStatus(status ?? todo.status);
     this.paintTodo();
   }

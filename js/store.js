@@ -1,5 +1,7 @@
 //전역 상태 관리
 
+import ValueManager from "./ValueManager";
+
 class Store {
   constructor() {
     this.selected;
@@ -17,6 +19,12 @@ class Store {
     this.todos.childNodes.forEach((todo) => {
       todo.addEventListener("dragstart", (event) => {
         this.updateStore(event.target);
+      });
+      todo.addEventListener("dblclick", (event) => {
+        const prevTodo = event.currentTarget;
+        const newTodo = new ValueManager(prevTodo);
+        newTodo.appendInput();
+        newTodo.setInputValue();
       });
     });
   }
