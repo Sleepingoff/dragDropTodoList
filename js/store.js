@@ -1,33 +1,54 @@
 //전역 상태 관리
 
-import ValueManager from "./ValueManager";
+import ToDoManager from "./ToDoManager.js";
+import ValueManager from "./ValueManager.js";
 
 class Store {
   constructor() {
     this.selected;
-    this.todos = document.querySelector("#all");
+    this.allToDo = document.querySelector("#all");
+    this.TodoList = new ToDoManager();
   }
   updateStore(selected) {
     this.selected = selected;
-    this.todos = document.querySelector("#all");
+    this.updateToDos();
+    this.updateList();
   }
-  updateToDos(todos) {
-    while (this.todos.firstChild) {
-      this.todos.firstChild.remove();
+  updateList() {
+    this.allToDo = document.querySelector("#all");
+    while (this.allToDo.firstChild) {
+      this.allToDo.firstChild.remove();
     }
-    this.todos.append(todos);
-    this.todos.childNodes.forEach((todo) => {
-      todo.addEventListener("dragstart", (event) => {
-        this.updateStore(event.target);
-      });
+    this.allToDo.append(this.TodoList.paintTodo());
+    this.allToDo.childNodes.forEach((todo) => {
       todo.addEventListener("dblclick", (event) => {
         const prevTodo = event.currentTarget;
-        const newTodo = new ValueManager(prevTodo);
-        newTodo.appendInput();
-        newTodo.setInputValue();
+        const dataset = event.currentTarget.dataset;
+        const input = appendInput(prevTodo);
+        input.addEventListener("blur", (e) => {
+          const newTodo = e.target.value;
+          prevTodo.textContent = newTodo;
+          this.TodoList.updateTodo({ ...dataset, value: newTodo });
+          this.updateStore();
+        });
       });
     });
   }
+  updateToDos() {
+    this.TodoList.paintTodo();
+  }
 }
+
+const appendInput = (targetNode) => {
+  const input = document.createElement("input");
+  const value = targetNode.textContent;
+  targetNode.textContent = "";
+  targetNode.appendChild(input);
+  const childInput = targetNode.querySelector("input");
+  childInput.value = value;
+
+  return childInput;
+};
+
 const store = new Store();
 export default store;

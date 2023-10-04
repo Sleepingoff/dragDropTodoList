@@ -6,7 +6,6 @@ const section = document.querySelector("section.wrap");
 
 export { section };
 
-const TodoList = new ToDoManager();
 const statusManger = new StatusManager();
 
 const statusForm = document.querySelector("#status");
@@ -45,20 +44,19 @@ todoForm.addEventListener("submit", (event) => {
     return false;
   }
   //새로운 할 일을 생성
-  TodoList.createTodo(todoInput.value);
+  store.TodoList.createTodo(todoInput.value);
   todoInput.value = "";
 
   //할 일 목록을 읽어오기
   store.updateStore();
-  TodoList.paintTodo();
-  statusManger.getToDos(TodoList.todos);
+  statusManger.getToDos(store.TodoList.todos);
 
-  store.todos.childNodes.forEach((todo) => {
+  store.allToDo.childNodes.forEach((todo) => {
     todo.addEventListener("dragstart", (event) => {
       const selected = event.currentTarget;
-      const selectedInfo = { ...selected.dataset, todo: selected.textContent };
+      const selectedInfo = { ...selected.dataset, value: selected.textContent };
       store.updateStore(selectedInfo);
-      statusManger.getToDos(TodoList.todos);
+      statusManger.getToDos(store.TodoList.todos);
     });
   });
 });
@@ -66,10 +64,10 @@ todoForm.addEventListener("submit", (event) => {
 //할 일 삭제하기
 deleteBtn.addEventListener("dragover", (e) => e.preventDefault());
 deleteBtn.addEventListener("drop", () => {
-  TodoList.deleteTodo(store.selected);
-  TodoList.paintTodo();
+  store.TodoList.deleteTodo(store.selected);
+  store.TodoList.paintTodo();
   store.updateStore();
-  statusManger.getToDos(TodoList.todos);
+  statusManger.getToDos(store.TodoList.todos);
 });
 
 section.addEventListener("dragover", (event) => {
@@ -78,16 +76,16 @@ section.addEventListener("dragover", (event) => {
 
 section.addEventListener("drop", (event) => {
   if (event.target.nodeName === "UL") {
-    TodoList.updateTodo(store.selected, event.target.id);
+    store.TodoList.updateTodo(store.selected, event.target.id);
     store.updateStore();
-    statusManger.getToDos(TodoList.todos);
+    statusManger.getToDos(store.TodoList.todos);
   }
 });
 
 section.addEventListener("dragstart", (event) => {
   store.updateStore({
     ...event.target.dataset,
-    todo: event.target.textContent,
+    value: event.target.textContent,
   });
 });
 

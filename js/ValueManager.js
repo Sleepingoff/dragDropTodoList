@@ -24,7 +24,6 @@ class ValueManager {
       this.childInput.remove();
     });
   }
-  //ToDo: 객체마다 같은 대상에 대한 키값 통일하기
   setTargetData() {
     return { ...this.targetData, value: this.value };
   }

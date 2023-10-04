@@ -22,11 +22,11 @@ class ToDoManager {
 
       frag.append(li);
     });
-    store.updateToDos(frag);
+    return frag;
   }
   updateTodo(todo, status) {
     const target = this.todos.find((elem) => todo?.key == elem.id);
-    target.todo = todo.value;
+    target.value = todo.value;
     target.setStatus(status ?? todo.status);
     this.paintTodo();
   }
