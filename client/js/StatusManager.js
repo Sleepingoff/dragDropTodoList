@@ -1,5 +1,5 @@
-import { section } from "../index.js";
 import Status from "./Status.js";
+const section = document.querySelector("section.wrap");
 
 const statusBtn = document.querySelector("ul.status-btns");
 class StatusManager {

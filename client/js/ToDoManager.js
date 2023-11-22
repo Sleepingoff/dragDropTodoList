@@ -31,7 +31,8 @@ class ToDoManager {
     this.paintTodo();
   }
   deleteTodo(todo) {
-    this.todos = this.todos.filter((elem) => elem.id != todo.dataset.key);
+    console.log(todo);
+    this.todos = this.todos.filter((elem) => elem.id != todo.key);
   }
 }
 

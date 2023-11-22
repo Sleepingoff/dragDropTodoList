@@ -3,8 +3,6 @@ import StatusManager from "./js/StatusManager.js";
 
 const section = document.querySelector("section.wrap");
 
-export { section };
-
 const statusManager = new StatusManager();
 
 const statusForm = document.querySelector("#status");
