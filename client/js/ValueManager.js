@@ -7,7 +7,7 @@ class ValueManager {
     this.value = "";
   }
   checkChildInput() {
-    return this.childInput ? true : false;
+    return !!this.childInput;
   }
   appendInput() {
     if (this.checkChildInput()) return false;
@@ -25,7 +25,7 @@ class ValueManager {
     });
   }
   setTargetData() {
-    return { ...this.targetData, value: this.value };
+    return { ...this.targetData };
   }
 }
 

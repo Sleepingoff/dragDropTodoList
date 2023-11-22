@@ -51,7 +51,7 @@ todoForm.addEventListener("submit", (event) => {
   store.allToDo.childNodes.forEach((todo) => {
     todo.addEventListener("dragstart", (event) => {
       const selected = event.currentTarget;
-      const selectedInfo = { ...selected.dataset, value: selected.textContent };
+      const selectedInfo = { ...selected.dataset };
       store.updateStore(selectedInfo);
       statusManager.getToDos(store.TodoList.todos);
     });
@@ -86,14 +86,4 @@ section.addEventListener("dragstart", (event) => {
   });
 });
 
-// const handleDoubleClickTodo = (event) => {
-//   const valueManager = new ValueManager(event.currentTarget);
-//   const dataset = valueManager.targetData;
-//   valueManager.appendInput();
-
-//   const newValue = valueManager.value;
-//   TodoList.updateTodo({ ...dataset, todo: newValue });
-//   statusManager.getToDos(TodoList.todos, handleDoubleClickTodo);
-// };
-
-//더블클릭 -> 인풋 생성 -> 인풋 블러 -> 값 가져오기
+//수정버튼 -> 내용 수정하기 기능

@@ -10,6 +10,7 @@ class Store {
     this.TodoList = new ToDoManager();
   }
   updateStore(selected) {
+    console.log(selected);
     this.selected = selected;
     this.updateToDos();
     this.updateList();
@@ -21,15 +22,17 @@ class Store {
     }
     this.allToDo.append(this.TodoList.paintTodo());
     this.allToDo.childNodes.forEach((todo) => {
-      todo.addEventListener("dblclick", (event) => {
-        const prevTodo = event.currentTarget;
-        const dataset = event.currentTarget.dataset;
+      console.log(todo);
+      const editBtn = todo.querySelector("#edit");
+      editBtn.addEventListener("click", (event) => {
+        const prevTodo = event.currentTarget.parentNode;
+        const dataset = prevTodo.dataset;
         const input = appendInput(prevTodo);
         input.addEventListener("blur", (e) => {
           const newTodo = e.target.value;
-          prevTodo.textContent = newTodo;
-          this.TodoList.updateTodo({ ...dataset, value: newTodo });
-          this.updateStore();
+          prevTodo.dataset.value = newTodo;
+          this.TodoList.updateTodo({ ...dataset });
+          this.updateStore({ ...dataset });
         });
       });
     });
@@ -41,7 +44,7 @@ class Store {
 
 const appendInput = (targetNode) => {
   const input = document.createElement("input");
-  const value = targetNode.textContent;
+  const value = targetNode.dataset.value;
   targetNode.textContent = "";
   targetNode.appendChild(input);
   const childInput = targetNode.querySelector("input");
