@@ -1,6 +1,5 @@
-import store from "./store.js";
-import ToDoManager from "./ToDoManager.js";
-import StatusManager from "./StatusManager.js";
+import store from "./js/store.js";
+import StatusManager from "./js/StatusManager.js";
 
 const section = document.querySelector("section.wrap");
 

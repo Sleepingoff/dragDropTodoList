@@ -1,4 +1,4 @@
-import { section } from "./index.js";
+import { section } from "../index.js";
 import Status from "./Status.js";
 
 const statusBtn = document.querySelector("ul.status-btns");
