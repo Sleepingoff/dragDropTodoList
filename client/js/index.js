@@ -6,7 +6,7 @@ const section = document.querySelector("section.wrap");
 
 export { section };
 
-const statusManger = new StatusManager();
+const statusManager = new StatusManager();
 
 const statusForm = document.querySelector("#status");
 const statusInput = statusForm.querySelector("input");
@@ -16,12 +16,12 @@ const todoInput = todoForm.querySelector("input");
 const deleteBtn = document.querySelector("#delete");
 
 //기본 상태 제공하기
-statusManger.paintStatus(`archive`);
-statusManger.paintStatus(`progress`);
-statusManger.paintStatus(`done`);
-statusManger.createStatusList(`archive`);
-statusManger.createStatusList(`progress`);
-statusManger.createStatusList(`done`);
+statusManager.paintStatus(`archive`);
+statusManager.paintStatus(`progress`);
+statusManager.paintStatus(`done`);
+statusManager.createStatusList(`archive`);
+statusManager.createStatusList(`progress`);
+statusManager.createStatusList(`done`);
 
 statusForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -31,8 +31,8 @@ statusForm.addEventListener("submit", (event) => {
   }
   const newStatus = statusInput.value;
 
-  statusManger.updateStatus(newStatus);
-  statusManger.paintStatus(newStatus);
+  statusManager.updateStatus(newStatus);
+  statusManager.paintStatus(newStatus);
 
   statusInput.value = "";
 });
@@ -49,14 +49,14 @@ todoForm.addEventListener("submit", (event) => {
 
   //할 일 목록을 읽어오기
   store.updateStore();
-  statusManger.getToDos(store.TodoList.todos);
+  statusManager.getToDos(store.TodoList.todos);
 
   store.allToDo.childNodes.forEach((todo) => {
     todo.addEventListener("dragstart", (event) => {
       const selected = event.currentTarget;
       const selectedInfo = { ...selected.dataset, value: selected.textContent };
       store.updateStore(selectedInfo);
-      statusManger.getToDos(store.TodoList.todos);
+      statusManager.getToDos(store.TodoList.todos);
     });
   });
 });
@@ -67,7 +67,7 @@ deleteBtn.addEventListener("drop", () => {
   store.TodoList.deleteTodo(store.selected);
   store.TodoList.paintTodo();
   store.updateStore();
-  statusManger.getToDos(store.TodoList.todos);
+  statusManager.getToDos(store.TodoList.todos);
 });
 
 section.addEventListener("dragover", (event) => {
@@ -78,7 +78,7 @@ section.addEventListener("drop", (event) => {
   if (event.target.nodeName === "UL") {
     store.TodoList.updateTodo(store.selected, event.target.id);
     store.updateStore();
-    statusManger.getToDos(store.TodoList.todos);
+    statusManager.getToDos(store.TodoList.todos);
   }
 });
 
@@ -96,7 +96,7 @@ section.addEventListener("dragstart", (event) => {
 
 //   const newValue = valueManager.value;
 //   TodoList.updateTodo({ ...dataset, todo: newValue });
-//   statusManger.getToDos(TodoList.todos, handleDoubleClickTodo);
+//   statusManager.getToDos(TodoList.todos, handleDoubleClickTodo);
 // };
 
 //더블클릭 -> 인풋 생성 -> 인풋 블러 -> 값 가져오기

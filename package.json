@@ -1,0 +1,14 @@
+{
+  "name": "dragdroptodo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "sleepingoff",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^10.6.0",
+    "firebase-tools": "^12.6.2"
+  }
+}
