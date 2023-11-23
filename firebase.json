@@ -1,11 +1,10 @@
 {
-    "hosting": {
-        "public": "client/index.html",
-        "ignore": [
-            "firebase.json",
-            "**/.*",
-            "**/node_modules/**",
-            ".obsidian"
-        ]
-    }
+  "hosting": {
+    "public": "client/dist",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
 }
