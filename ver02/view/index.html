@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDo</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <script type="module" src="index.js"></script>
+    <script
+      src="https://kit.fontawesome.com/84dd101a00.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body>
+    <header><h1>ToDoList</h1></header>
+    <main>
+      <article>
+        <form action="submit" id="status">
+          <input type="text" />
+          <button id="add-status">new status</button>
+        </form>
+        <ul class="status-btns"></ul>
+      </article>
+
+      <article>
+        <form action="submit" id="todo">
+          <input type="text" />
+          <button id="add">ADD</button>
+        </form>
+        <ul id="all"></ul>
+      </article>
+      <section class="wrap"></section>
+    </main>
+    <button id="delete">
+      <i class="fa-solid fa-trash-can fa-2xl"></i>
+    </button>
+  </body>
+</html>
