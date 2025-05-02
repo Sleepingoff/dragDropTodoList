@@ -4,6 +4,13 @@ import {
   generateId,
   generateTimestamp,
   checkDefaultCategory,
+  getStore,
+  setStore,
+  getTodos,
+  getTodoById,
+  addTodos,
+  updateTodos,
+  deleteTodos,
 } from "./store.js";
 
 export default {
@@ -14,4 +21,15 @@ export default {
   generateTimestamp,
 
   checkDefaultCategory,
+
+  getStore,
+  setStore,
+
+  TODO: {
+    getTodos,
+    getTodoById,
+    addTodos,
+    updateTodos,
+    deleteTodos,
+  },
 };
