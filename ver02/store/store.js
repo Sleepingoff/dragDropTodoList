@@ -48,7 +48,7 @@ export function getTodos() {
 //get todo
 export function getTodoById(id) {
   //get todos from local storage
-  const todos = getStore(store.TODO);
+  const todos = getStore(TARGET.TODO);
   //find todo by id
   const todo = todos.find((todo) => todo.id === id);
   //return todo

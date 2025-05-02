@@ -55,16 +55,18 @@ function handleSubmitToCreateTodo(e) {
   todoForm.reset();
 }
 
+//? move to store
 function createNewTodo(todo) {
   const version = getCurrentVersion();
   const id = generateId();
   const timestamp = generateTimestamp();
+  //TODO: get current selected category
   const category = getDefaultCategory();
   return {
     version,
     id,
     timestamp,
-    todo,
+    todo: todo,
     active: true,
     category_id: category.id,
   };
