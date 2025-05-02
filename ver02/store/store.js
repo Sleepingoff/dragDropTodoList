@@ -1,4 +1,4 @@
-const store = {
+const TARGET = {
   TODO: "todos",
   CATEGORY: "categories",
 };
@@ -40,7 +40,7 @@ export function setStore(target, data) {
 //get todos
 export function getTodos() {
   //get todos from local storage
-  const todos = getStore(store.TODO);
+  const todos = getStore(TARGET.TODO);
   //return todos
   return todos;
 }
@@ -58,7 +58,7 @@ export function getTodoById(id) {
 //add todos
 export function addTodos(todo) {
   //get todos from local storage
-  const todos = getStore(store.TODO);
+  const todos = getStore(TARGET.TODO);
   //push todo to todos array
   const newTodos = addArray(todos, todo);
   //set todos to local storage
@@ -68,7 +68,7 @@ export function addTodos(todo) {
 //delete todos
 export function deleteTodos(todo) {
   //get todos from local storage
-  const todos = getStore(store.TODO);
+  const todos = getStore(TARGET.TODO);
   //filter todos
   const newTodos = filterArray(todos, "id", todo.id);
   //set todos to local storage
@@ -78,7 +78,7 @@ export function deleteTodos(todo) {
 //update todos
 export function updateTodos(todo) {
   //get todos from local storage
-  const todos = getStore(store.TODO);
+  const todos = getStore(TARGET.TODO);
   //map todos
   const newTodos = updateArray(todos, "id", todo);
   //set todos to local storage
