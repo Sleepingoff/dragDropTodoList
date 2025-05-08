@@ -1,3 +1,5 @@
+import { addArray, filterArray, updateArray } from "../utils/array";
+
 const TARGET = {
   TODO: "todos",
   CATEGORY: "categories",
@@ -50,96 +52,84 @@ export function getTodoById(id) {
   //get todos from local storage
   const todos = getStore(TARGET.TODO);
   //find todo by id
-  const todo = todos.find((todo) => todo.id === id);
+  const todo = filterArray(todos, "id", id);
+  //TODO: todo가 비어있을 경우는?
   //return todo
   return todo;
 }
 
-//add todos
-export function addTodos(todo) {
+//add todos : 하나의 todo만 추가하는 것이기 때문에 단수로 변경
+export function addTodo(todo) {
   //get todos from local storage
   const todos = getStore(TARGET.TODO);
   //push todo to todos array
   const newTodos = addArray(todos, todo);
   //set todos to local storage
-  setStore(store.TODO, newTodos);
+  setStore(TARGET.TODO, newTodos);
 }
 
 //delete todos
-export function deleteTodos(todo) {
+export function deleteTodo(todo) {
   //get todos from local storage
   const todos = getStore(TARGET.TODO);
   //filter todos
   const newTodos = filterArray(todos, "id", todo.id);
   //set todos to local storage
-  setStore(store.TODO, newTodos);
+  setStore(TARGET.TODO, newTodos);
 }
 
 //update todos
-export function updateTodos(todo) {
+export function updateTodo(todo) {
   //get todos from local storage
   const todos = getStore(TARGET.TODO);
   //map todos
   const newTodos = updateArray(todos, "id", todo);
   //set todos to local storage
-  setStore(store.TODO, newTodos);
+  setStore(TARGET.TODO, newTodos);
 }
 
-//filter array
-export function filterArray(array, key, value) {
-  //filter array
-  const newArray = array.filter((item) => item[key] === value);
-  //return new array
-  return newArray;
+/**
+ * category list
+ */
+
+//? todo list와 동일한 로직을 이용할지(TARGET.TODO를 인자로 넘기는 방식)
+//? category list를 별도로 만드는 게 좋을지
+//-> 현재는 두개 모두 동일하게 로컬 스토리지에 접근하지만, 추후에 api를 사용할 경우 둘의 로직은 분리되어 움직여야 한다.
+//-> api를 사용할 경우 에러메세지 등을 처리할 때 분기처리가 될 수도 있다.
+//! 일단 다른 데이터를 대상으로 하며, 스토어에 접근하는 액션 로직이 있으므로 별도로 만들자.
+
+//get categories
+export function getCategories() {
+  const category = getStore(TARGET.CATEGORY);
+  return category;
 }
 
-//update array
-export function updateArray(array, key, value) {
-  //map array
-  const newArray = array.map((item) => {
-    if (item[key] === value[key]) {
-      return { ...item, ...value };
-    }
-    return item;
-  });
-  //return new array
-  return newArray;
+//get category by id
+export function getCategoryById(id) {
+  const categories = getStore(TARGET.CATEGORY);
+  const category = filterArray(categories, "id", id);
+  return category;
 }
 
-//나중에 순서를 바꾸는 등의 작업을 할 수 있도록 별도로 분리
-//add array
-export function addArray(array, value) {
-  const newArray = [...array];
-  //push value to array
-  newArray.push(value);
-  //return new array
-  return newArray;
+//add category: 하나의 카테고리만 추가하는 것이기 때문에 단수로 사용
+export function addCategory(category) {
+  const categories = getStore(TARGET.CATEGORY);
+  const newCategories = addArray(categories, category);
+  setStore(TARGET.CATEGORY, newCategories);
 }
 
-//switch order of array by index
-export function switchArray(array, index1, index2) {
-  const newArray = [...array];
-  //switch order of array by index
-  const temp = newArray[index1];
-  newArray[index1] = newArray[index2];
-  newArray[index2] = temp;
-  //return new array
-  return newArray;
+//update category
+export function updateCategory(category) {
+  const categories = getStore(TARGET.CATEGORY);
+  //id를 기준으로 기존 카테고리 리스트에서 해당 내용을 찾아 덮어쓰기
+  const newCategories = updateArray(categories, "id", category);
+  setStore(TARGET.CATEGORY, newCategories);
 }
 
-//sort array by key
-export function sortArray(array, key) {
-  const newArray = [...array];
-  //sort array by key
-  newArray.sort((a, b) => {
-    if (a[key] < b[key]) {
-      return -1;
-    }
-    if (a[key] > b[key]) {
-      return 1;
-    }
-    return 0;
-  });
-  //return new array
-  return newArray;
+//delete category
+export function deleteCategory(category) {
+  const categories = getStore(TARGET.CATEGORY);
+  //id를 기준으로 기존 카테고리 리스트에서 해당 내용을 찾아 덮어쓰기
+  const newCategories = filterArray(categories, "id", category.id);
+  setStore(TARGET.CATEGORY, newCategories);
 }
