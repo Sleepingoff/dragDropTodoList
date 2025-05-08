@@ -1,8 +1,15 @@
-//filter array
+//filter array -> filter array with value
 export function filterArray(array, key, value) {
   //filter array
-  const newArray = array.filter((item) => item[key] === value);
+  //!updateArray와 달리 value를 받기 때문에 인자 전달이 좀 헷갈릴 듯하여 교체
+  const newArray = array.filter((item) => item[key] === value[key]);
   //return new array
+  return newArray;
+}
+
+//filter array -> filter array without value
+export function filterArrayWithoutValue(array, key, value) {
+  const newArray = array.filter((item) => item[key] != value[key]);
   return newArray;
 }
 

@@ -1,4 +1,9 @@
-import { addArray, filterArray, updateArray } from "../utils/array";
+import {
+  addArray,
+  filterArray,
+  filterArrayWithoutValue,
+  updateArray,
+} from "../utils/array";
 
 const TARGET = {
   TODO: "todos",
@@ -48,11 +53,11 @@ export function getTodos() {
 }
 
 //get todo
-export function getTodoById(id) {
+export function getTodo(todo) {
   //get todos from local storage
   const todos = getStore(TARGET.TODO);
   //find todo by id
-  const todo = filterArray(todos, "id", id);
+  const todo = filterArray(todos, "id", todo);
   //TODO: todo가 비어있을 경우는?
   //return todo
   return todo;
@@ -73,7 +78,7 @@ export function deleteTodo(todo) {
   //get todos from local storage
   const todos = getStore(TARGET.TODO);
   //filter todos
-  const newTodos = filterArray(todos, "id", todo.id);
+  const newTodos = filterArrayWithoutValue(todos, "id", todo);
   //set todos to local storage
   setStore(TARGET.TODO, newTodos);
 }
@@ -105,9 +110,9 @@ export function getCategories() {
 }
 
 //get category by id
-export function getCategoryById(id) {
+export function getCategory(category) {
   const categories = getStore(TARGET.CATEGORY);
-  const category = filterArray(categories, "id", id);
+  const category = filterArray(categories, "id", category);
   return category;
 }
 
@@ -130,6 +135,6 @@ export function updateCategory(category) {
 export function deleteCategory(category) {
   const categories = getStore(TARGET.CATEGORY);
   //id를 기준으로 기존 카테고리 리스트에서 해당 내용을 찾아 덮어쓰기
-  const newCategories = filterArray(categories, "id", category.id);
+  const newCategories = filterArrayWithoutValue(categories, "id", category);
   setStore(TARGET.CATEGORY, newCategories);
 }
